@@ -10,6 +10,7 @@ SimpleIRC is;
 
 #Examples#
 [ParrotBot](examples/parrotbot.py) - A bot that replies to you with the same message, just like a parrot.
+[HelloBot](examples/hellobot.py) - A bot that greets people who say "Hi" or "Hello".
 
 #Documentation and Examples#
 
