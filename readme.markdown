@@ -12,6 +12,7 @@ SimpleIRC is;
 [ParrotBot](examples/parrotbot.py) - A bot that replies to you with the same message, just like a parrot.  
 [HelloBot](examples/hellobot.py) - A bot that greets people who say "Hi" or "Hello".  
 [WeatherBot](examples/weatherbot.py) - A bot that responds to "!weather Istanbul" with the current weather.  
+[TitleBot](examples/titlebot.py) - A bot that responds with the titles of URLs posted to the channel.
 
 #Documentation and Examples#
 The library is quite new so I haven't found the time to document it yet. I will try adding some examples soon.
