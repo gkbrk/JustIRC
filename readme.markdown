@@ -1,5 +1,5 @@
-#What is SimpleIRC#
-SimpleIRC is a single-file IRC library that allows you to write simple IRC bots without having to deal with large frameworks. It's designed to be simple rather than feature-rich. That doesn't mean it doesn't have the necessary feautures for an IRC bot though.
+#What is JustIRC#
+JustIRC is a single-file IRC library that allows you to write simple IRC bots without having to deal with large frameworks. It's designed to be simple rather than feature-rich. That doesn't mean it doesn't have the necessary feautures for an IRC bot though.
 
 SimpleIRC is;
 
