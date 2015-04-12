@@ -7,6 +7,6 @@ setup(
     author = "Gokberk Yaltirakli",
     author_email = "webdosusb@gmail.com",
     url = "https://github.com/gkbrk/SimpleIRC",
-    download_url = "https://github.com/gkbrk/SimpleIRC/tarball/master"
+    download_url = "https://github.com/gkbrk/SimpleIRC/tarball/master",
     keywords = ["irc", "event"]
 )
