@@ -50,7 +50,7 @@ class IRCConnection:
         self.on_packet_received = []
 
     def run_once(self):
-        packet = parse_irc_packet(self.read_line_from_socket())
+        packet = parse_irc_packet(self.lines.next())
         
         for event_handler in list(self.on_packet_received):
             event_handler(self, packet)
@@ -86,8 +86,18 @@ class IRCConnection:
             current_buffer += self.socket.recv(1).decode("utf-8", "replace")
         return current_buffer.replace("\r\n", "")
 
+    def read_lines(self):
+        buff = ""
+        while True:
+            buff += s.recv(1024).decode("utf-8", "replace")
+            while "\n" in buff:
+                line, buff = buff.split("\n", 1)
+                line = line.replace("\r", "")
+                yield line
+
     def connect(self, server, port=6667):
         self.socket.connect((server, port))
+        self.lines = self.read_lines()
         for event_handler in list(self.on_connect):
             event_handler(self)
 
