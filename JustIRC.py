@@ -95,7 +95,6 @@ class IRCConnection:
             while "\n" in buff:
                 line, buff = buff.split("\n", 1)
                 line = line.replace("\r", "")
-                print(line)
                 yield line
 
     def connect(self, server, port=6667):
