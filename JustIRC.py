@@ -50,7 +50,7 @@ class IRCConnection:
         self.on_packet_received = []
 
     def run_once(self):
-        packet = parse_irc_packet(self.lines.next())
+        packet = parse_irc_packet(next(self.lines)) #Get next line from generator
         
         for event_handler in list(self.on_packet_received):
             event_handler(self, packet)
@@ -89,7 +89,7 @@ class IRCConnection:
     def read_lines(self):
         buff = ""
         while True:
-            buff += s.recv(1024).decode("utf-8", "replace")
+            buff += self.socket.recv(1024).decode("utf-8", "replace")
             while "\n" in buff:
                 line, buff = buff.split("\n", 1)
                 line = line.replace("\r", "")
