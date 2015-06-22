@@ -1,8 +1,8 @@
-import SimpleIRC
+import JustIRC
 import requests
 import re
 
-bot = SimpleIRC.IRCConnection()
+bot = JustIRC.IRCConnection()
 
 def on_connect(bot):
     bot.set_nick("TitleBot")

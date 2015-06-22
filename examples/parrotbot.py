@@ -1,6 +1,6 @@
-import SimpleIRC
+import JustIRC
 
-bot = SimpleIRC.IRCConnection()
+bot = JustIRC.IRCConnection()
 
 def on_connect(bot):
     bot.set_nick("ParrotBotGk")

@@ -1,7 +1,7 @@
-import SimpleIRC
+import JustIRC
 import random
 
-bot = SimpleIRC.IRCConnection()
+bot = JustIRC.IRCConnection()
 
 greetings = [
     "Hello {}!",
