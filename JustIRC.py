@@ -80,12 +80,6 @@ class IRCConnection:
         while True:
             self.run_once()
 
-    def read_line_from_socket(self):
-        current_buffer = ""
-        while not current_buffer.endswith("\r\n"):
-            current_buffer += self.socket.recv(1).decode("utf-8", "replace")
-        return current_buffer.replace("\r\n", "")
-
     def read_lines(self):
         buff = ""
         while True:
