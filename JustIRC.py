@@ -48,6 +48,8 @@ class IRCConnection:
         self.on_ping = []
         self.on_welcome = []
         self.on_packet_received = []
+        self.on_join = []
+        self.on_leave = []
 
     def run_once(self):
         packet = parse_irc_packet(next(self.lines)) #Get next line from generator
@@ -75,6 +77,12 @@ class IRCConnection:
         elif packet.command == "001":
             for event_handler in list(self.on_welcome):
                 event_handler(self)
+        elif packet.command == "JOIN":
+            for event_handler in list(self.on_join):
+                event_handler(self, packet.arguments[0], packet.prefix.split("!")[0])
+        elif packet.command == "PART":
+            for event_handler in list(self.on_leave):
+                event_handler(self, packet.arguments[0], packet.prefix.split("!")[0])
 
     def run_loop(self):
         while True:
@@ -87,6 +95,7 @@ class IRCConnection:
             while "\n" in buff:
                 line, buff = buff.split("\n", 1)
                 line = line.replace("\r", "")
+                print(line)
                 yield line
 
     def connect(self, server, port=6667):
