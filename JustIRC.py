@@ -63,7 +63,7 @@ class IRCConnection:
                     event_handler(self, packet.arguments[0], packet.prefix.split("!")[0], packet.arguments[1])
             else:
                 for event_handler in list(self.on_private_message):
-                    event_handler(self, packet.arguments[0], packet.arguments[1])
+                    event_handler(self, packet.prefix.split("!")[0], packet.arguments[1])
         elif packet.command == "PING":
             self.send_line("PONG :{}".format(packet.arguments[0]))
 
