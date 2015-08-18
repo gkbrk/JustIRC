@@ -53,7 +53,7 @@ class IRCConnection:
 
     def run_once(self):
         packet = parse_irc_packet(next(self.lines)) #Get next line from generator
-        
+
         for event_handler in list(self.on_packet_received):
             event_handler(self, packet)
 
@@ -72,7 +72,7 @@ class IRCConnection:
         elif packet.command == "433" or packet.command == "437":
             #Command 433 is "Nick in use"
             #Add underscore to the nick
-            
+
             self.set_nick("{}_".format(self.nick))
         elif packet.command == "001":
             for event_handler in list(self.on_welcome):
@@ -118,6 +118,6 @@ class IRCConnection:
     def set_nick(self, nick):
         self.nick = nick
         self.send_line("NICK {}".format(nick))
-    
+
     def send_user_packet(self, username):
         self.send_line("USER {} 0 * :{}".format(username, username))
