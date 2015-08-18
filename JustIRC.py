@@ -109,6 +109,9 @@ class IRCConnection:
     def send_message(self, to, message):
         self.send_line("PRIVMSG {} :{}".format(to, message))
 
+    def send_notice(self, to, message):
+        self.send_line("NOTICE {} :{}".format(to, message))
+
     def send_action_message(self, to, action):
         self.send_message(to, "\x01ACTION {}\x01".format(action))
 
