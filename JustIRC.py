@@ -82,7 +82,7 @@ class IRCConnection:
             self.set_nick("{}_".format(self.nick))
         elif packet.command == "353": # NAMES
             for event_handler in list(self.on_names_received):
-                event_handler([ item.replace('@','') for item in packet.arguments[3].split(' ') if item!=""])
+                event_handler(self, [ item.replace('@','') for item in packet.arguments[3].split(' ') if item!=""])
         elif packet.command == "001":
             for event_handler in list(self.on_welcome):
                 event_handler(self)
@@ -94,7 +94,7 @@ class IRCConnection:
                 event_handler(self, packet.arguments[0], packet.prefix.split("!")[0])
         elif packet.command == "NOTICE":
             for event_handler in list(self.on_notice):
-                event_handler(packet.arguments[1])
+                event_handler(self, packet.arguments[1])
 
     def run_loop(self):
         while True:
