@@ -64,8 +64,8 @@ class IRCConnection:
                 for event_handler in list(self.on_public_message):
                     event_handler(self, packet.arguments[0], packet.prefix.split("!")[0], packet.arguments[1])
             elif packet.arguments[1].find('\x01VERSION\x01') != -1:
-		      #CTCP request
-		      _sender = packet.prefix.split("!")[0]
+                #CTCP request
+                _sender = packet.prefix.split("!")[0]
                 self.send_line("NOTICE " + _sender +" :\x01VERSION Purple IRC")
             else:
                 for event_handler in list(self.on_private_message):
