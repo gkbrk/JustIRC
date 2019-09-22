@@ -54,6 +54,8 @@ class IRCConnection:
         self.on_packet_received = []
         self.on_join = []
         self.on_leave = []
+        self.on_names_received = []
+        self.on_notice = []
 
     def run_once(self):
         """This function runs one iteration of the IRC client. This is called in a loop
@@ -70,6 +72,10 @@ class IRCConnection:
             if packet.arguments[0].startswith("#"):
                 for event_handler in list(self.on_public_message):
                     event_handler(self, packet.arguments[0], packet.prefix.split("!")[0], packet.arguments[1])
+            elif packet.arguments[1].find('\x01VERSION\x01') != -1:
+                #CTCP request
+                _sender = packet.prefix.split("!")[0]
+                self.send_line("NOTICE " + _sender +" :\x01VERSION Purple IRC")
             else:
                 for event_handler in list(self.on_private_message):
                     event_handler(self, packet.prefix.split("!")[0], packet.arguments[1])
@@ -83,6 +89,9 @@ class IRCConnection:
             #Add underscore to the nick
 
             self.set_nick("{}_".format(self.nick))
+        elif packet.command == "353": # NAMES
+            for event_handler in list(self.on_names_received):
+                event_handler(self, [ item.replace('@','') for item in packet.arguments[3].split(' ') if item!=""])
         elif packet.command == "001":
             for event_handler in list(self.on_welcome):
                 event_handler(self)
@@ -92,6 +101,9 @@ class IRCConnection:
         elif packet.command == "PART":
             for event_handler in list(self.on_leave):
                 event_handler(self, packet.arguments[0], packet.prefix.split("!")[0])
+        elif packet.command == "NOTICE":
+            for event_handler in list(self.on_notice):
+                event_handler(self, packet.arguments[1])
 
     def run_loop(self):
         """Runs the main loop of the client. This function is usually called after you
@@ -157,6 +169,9 @@ class IRCConnection:
         """
         self.send_line("JOIN {}".format(channel_name))
 
+    def list_channel(self, channel_name):
+        self.send_line("NAMES #{}".format(channel_name))
+        
     def set_nick(self, nick):
         """Sets or changes your link. This should be called before joining channels, but
         can be called at any time afterwards. If the requested nickname is not
