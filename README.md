@@ -1,8 +1,13 @@
+![PyPI](https://img.shields.io/pypi/v/JustIRC)
+![License](https://img.shields.io/github/license/gkbrk/JustIRC)
+
 # What is JustIRC
 JustIRC is a single-file IRC library that allows you to write simple IRC bots
 without having to deal with large frameworks. It's designed to be simple rather
 than feature-rich. That doesn't mean it doesn't have the necessary feautures for
 an IRC bot though.
+
+[Documentation](https://justirc.readthedocs.io/en/latest/)
 
 JustIRC is
 

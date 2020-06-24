@@ -4,6 +4,8 @@ copyright = "2020, Gokberk Yaltirakli"
 
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon']
 
+master_doc = 'index'
+
 html_theme = "alabaster"
 
 html_sidebars = {
