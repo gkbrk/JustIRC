@@ -1,10 +1,42 @@
 import socket
-import time
+from collections import namedtuple
+
+
+_IRCPacket = namedtuple("IRCPacket", "prefix command arguments")
+
 
 def _parse_irc_packet(packet):
-    irc_packet = _IRCPacket()
-    irc_packet.parse(packet)
-    return irc_packet
+    prefix = ""
+    command = ""
+    arguments = []
+
+    if packet.startswith(":"):
+        prefix = packet[1:].split(" ")[0]
+        packet = packet.split(" ", 1)[1]
+
+    if " " in packet:
+        if " :" in packet:
+            last_argument = packet.split(" :")[1]
+            packet = packet.split(" :")[0]
+            for splitted in packet.split(" "):
+                if not command:
+                    command = splitted
+                else:
+                    arguments.append(splitted)
+            arguments.append(last_argument)
+        else:
+            for splitted in packet.split(" "):
+                if not command:
+                    command = splitted
+                else:
+                    arguments.append(splitted)
+    else:
+        command = packet
+
+    return _IRCPacket(prefix, command, arguments)
+
+
+_IRCPacket.parse = _parse_irc_packet
 
 class _IRCPacket:
     def __init__(self):
