@@ -110,12 +110,28 @@ class IRCConnection:
                 line = line.replace("\r", "")
                 yield line
 
-    def connect(self, server, port=6667):
-        """Connects to a given IRC server. After the connection is established, it calls
-        the on_connect event handler.
+    def connect(self, server, port=6667, tls=False):
+        """Connects to the IRC server
+
+        Parameters
+        ----------
+        server : str
+            The server IP or domain to connect to
+        port : int
+            The server port to connect to
+        tls : bool
+            Enable the use of TLS
 
         """
-        self.socket.connect((server, port))
+
+        self.socket = socket.create_connection((server, port))
+
+        if tls:
+            import ssl
+
+            context = ssl.SSLContext()
+            self.socket = context.wrap_socket(self.socket, server)
+
         self.lines = self._read_lines()
         for event_handler in list(self.on_connect):
             event_handler(self)
