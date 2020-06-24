@@ -11,21 +11,25 @@ greetings = [
     "Hey {}!"
 ]
 
-def on_connect(bot):
-    bot.set_nick("HelloBot")
+@bot.on("connect")
+def connect(e):
+    bot.set_nick("ghast")
     bot.send_user_packet("HelloBot")
 
-def on_welcome(bot):
+@bot.on("welcome")
+def welcome(e):
     bot.join_channel("#HelloBotTest")
 
-def on_message(bot, channel, sender, message):
-    if "hi" in message.lower() or "hello" in message.lower():
-        greeting_message = random.choice(greetings).format(sender)
-        bot.send_message(channel, greeting_message)
+@bot.on("message")
+def message(e):
+    msg = e.message.lower()
+    if "hi" in msg or "hello" in msg:
+        greeting = random.choice(greetings).format(e.sender)
+        bot.send_message(e.channel, greeting)
 
-bot.on_connect.append(on_connect)
-bot.on_welcome.append(on_welcome)
-bot.on_public_message.append(on_message)
+@bot.on("packet")
+def dbg(e):
+    print(e.packet)
 
 bot.connect("irc.freenode.net")
 bot.run_loop()
