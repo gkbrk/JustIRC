@@ -171,7 +171,45 @@ class IRCConnection(EventEmitter):
                 line = line.replace("\r", "")
                 yield line
 
-    def connect(self, server, port=6667, tls=False):
+    def _create_connection(self, address, keepalive=False, force_ipv4=False, source_address=None):
+        # based on socket.create_connection(), with support for keepalive and force_ipv4
+
+        host, port = address
+        for res in socket.getaddrinfo(host, port, 0, socket.SOCK_STREAM):
+            af, socktype, proto, canonname, sa = res
+            sock = None
+
+            if force_ipv4 and af != socket.AF_INET:
+                print("Skipping non-ipv4 address: %s" % (sa[0]))
+                continue
+
+            print("Trying address %s..." % (sa[0]))
+
+            try:
+                sock = socket.socket(af, socktype, proto)
+                if keepalive:
+                    sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+                    if len(set(vars(socket)) & set(["TCP_KEEPIDLE", "TCP_KEEPINTVL" ,"TCP_KEEPCNT"])) == 3:
+                        print("setting aggressive keepalive")
+                        # - be worried after 3min of idle time
+                        # - send keepalive every 15s
+                        # - abort after 12 keepalives (additional 3 minutes)
+                        sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPIDLE, 180)
+                        sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPINTVL, 15)
+                        sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPCNT, 12)
+                if source_address:
+                    sock.bind(source_address)
+                sock.connect(sa)
+                return sock
+
+            except Exception as e:
+                print("ERROR:  %s" % (e))
+                if sock is not None:
+                    sock.close()
+
+        raise Exception("getaddrinfo has no (further) addresses to try")
+
+    def connect(self, server, port=6667, tls=False, keepalive=True, force_ipv4=False):
         """Connects to the IRC server
 
         Parameters
@@ -182,10 +220,14 @@ class IRCConnection(EventEmitter):
             The server port to connect to
         tls : bool
             Enable the use of TLS
+        keepalive : bool
+            Explicitly enable TCP Keepalive, with short timer values
+        force_ipv4 : bool
+            Try IPv4 addresses only
 
         """
 
-        self.socket = socket.create_connection((server, port))
+        self.socket = self._create_connection((server, port), keepalive=keepalive, force_ipv4=force_ipv4)
 
         if tls:
             import ssl
